@@ -1,0 +1,851 @@
+openapi: 3.0.3
+info:
+  title: Nzila Plus API
+  version: 0.0.0
+paths:
+  /api-token-auth/:
+    post:
+      operationId: api_token_auth_create
+      tags:
+      - api-token-auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/cargas/:
+    get:
+      operationId: api_cargas_list
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Carga'
+          description: ''
+    post:
+      operationId: api_cargas_create
+      summary: Criar carga com imagem
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CargaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CargaRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carga'
+          description: ''
+  /api/cargas/{id}/:
+    get:
+      operationId: api_cargas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carga.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carga'
+          description: ''
+    put:
+      operationId: api_cargas_update
+      summary: Atualizar carga com imagem
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carga.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CargaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CargaRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carga'
+          description: ''
+    patch:
+      operationId: api_cargas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carga.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCargaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCargaRequest'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carga'
+          description: ''
+    delete:
+      operationId: api_cargas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carga.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/cargas/{id}/aceitar/:
+    post:
+      operationId: api_cargas_aceitar_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carga.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/cargas/{id}/finalizar-entrega/:
+    post:
+      operationId: api_cargas_finalizar_entrega_create
+      description: |-
+        Motorista marca uma carga como entregue.
+        Apenas o motorista atribuído à carga pode finalizá-la.
+        Endpoint: POST /api/cargas/{id}/finalizar-entrega/
+
+        Requer: URL com o ID da carga
+        Sem campos adicionais no corpo da requisição.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carga.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/cargas/{id}/recusar/:
+    post:
+      operationId: api_cargas_recusar_create
+      description: |-
+        Motorista recusa uma carga disponível.
+        Por enquanto, apenas retorna mensagem de sucesso.
+        TODO: Adicionar lógica de ignorar/marcar como rejeitado pelo motorista.
+        Endpoint: POST /api/cargas/{id}/recusar/
+
+        Requer: URL com o ID da carga
+        Sem campos adicionais no corpo da requisição.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this carga.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/cargas/disponiveis/:
+    get:
+      operationId: api_cargas_disponiveis_retrieve
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carga'
+          description: ''
+  /api/login/:
+    post:
+      operationId: api_login_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/motorista/:
+    get:
+      operationId: api_motorista_list
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Motorista'
+          description: ''
+    post:
+      operationId: api_motorista_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotoristaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MotoristaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MotoristaRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Motorista'
+          description: ''
+  /api/motorista/{id}/:
+    get:
+      operationId: api_motorista_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this motorista.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Motorista'
+          description: ''
+    put:
+      operationId: api_motorista_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this motorista.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotoristaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MotoristaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MotoristaRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Motorista'
+          description: ''
+    patch:
+      operationId: api_motorista_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this motorista.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMotoristaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMotoristaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMotoristaRequest'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Motorista'
+          description: ''
+    delete:
+      operationId: api_motorista_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this motorista.
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/register/:
+    post:
+      operationId: api_register_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+          readOnly: true
+      required:
+      - token
+    AuthTokenRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    Carga:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        titulo:
+          type: string
+          maxLength: 200
+        descricao:
+          type: string
+        peso_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        foto_carga:
+          type: string
+          format: uri
+        origem:
+          type: string
+          maxLength: 255
+        destino:
+          type: string
+          maxLength: 255
+        origem_coords:
+          type: string
+          title: Coordenadas de Origem (lat,long)
+          maxLength: 255
+        destino_coords:
+          type: string
+          title: Coordenadas de Destino (lat,long)
+          maxLength: 255
+        preco_frete:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        tipo_servico:
+          allOf:
+          - $ref: '#/components/schemas/TipoServicoEnum'
+          title: Tipo de Serviço
+        data_agendamento:
+          type: string
+          format: date-time
+          nullable: true
+          title: Data do Agendamento
+        acompanhada:
+          type: boolean
+          title: Cliente vai acompanhar a carga?
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
+        cliente:
+          type: integer
+          readOnly: true
+        motorista:
+          type: integer
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - cliente
+      - data_criacao
+      - descricao
+      - destino
+      - id
+      - origem
+      - peso_kg
+      - status
+      - titulo
+    CargaRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+          minLength: 1
+          maxLength: 200
+        descricao:
+          type: string
+          minLength: 1
+        peso_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        foto_carga:
+          type: string
+          format: binary
+        origem:
+          type: string
+          minLength: 1
+          maxLength: 255
+        destino:
+          type: string
+          minLength: 1
+          maxLength: 255
+        origem_coords:
+          type: string
+          title: Coordenadas de Origem (lat,long)
+          maxLength: 255
+        destino_coords:
+          type: string
+          title: Coordenadas de Destino (lat,long)
+          maxLength: 255
+        preco_frete:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        tipo_servico:
+          allOf:
+          - $ref: '#/components/schemas/TipoServicoEnum'
+          title: Tipo de Serviço
+        data_agendamento:
+          type: string
+          format: date-time
+          nullable: true
+          title: Data do Agendamento
+        acompanhada:
+          type: boolean
+          title: Cliente vai acompanhar a carga?
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
+        motorista:
+          type: integer
+          nullable: true
+      required:
+      - descricao
+      - destino
+      - origem
+      - peso_kg
+      - titulo
+    CategoriaEnum:
+      enum:
+      - construcao
+      - mobilia
+      - eletro
+      - outros
+      type: string
+      description: |-
+        * `construcao` - Materiais de Construção
+        * `mobilia` - Mobiliário/Casa
+        * `eletro` - Eletrodomésticos
+        * `outros` - Outros/Diversos
+    Motorista:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        telefone:
+          type: string
+          maxLength: 20
+        bi:
+          type: string
+          title: Bilhete de Identidade
+          maxLength: 20
+        carta_conducao:
+          type: string
+          maxLength: 50
+        user:
+          type: integer
+        veiculo:
+          type: integer
+          nullable: true
+      required:
+      - bi
+      - carta_conducao
+      - id
+      - telefone
+      - user
+    MotoristaRequest:
+      type: object
+      properties:
+        telefone:
+          type: string
+          minLength: 1
+          maxLength: 20
+        bi:
+          type: string
+          minLength: 1
+          title: Bilhete de Identidade
+          maxLength: 20
+        carta_conducao:
+          type: string
+          minLength: 1
+          maxLength: 50
+        user:
+          type: integer
+        veiculo:
+          type: integer
+          nullable: true
+      required:
+      - bi
+      - carta_conducao
+      - telefone
+      - user
+    PatchedCargaRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+          minLength: 1
+          maxLength: 200
+        descricao:
+          type: string
+          minLength: 1
+        peso_kg:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        foto_carga:
+          type: string
+          format: binary
+        origem:
+          type: string
+          minLength: 1
+          maxLength: 255
+        destino:
+          type: string
+          minLength: 1
+          maxLength: 255
+        origem_coords:
+          type: string
+          title: Coordenadas de Origem (lat,long)
+          maxLength: 255
+        destino_coords:
+          type: string
+          title: Coordenadas de Destino (lat,long)
+          maxLength: 255
+        preco_frete:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        tipo_servico:
+          allOf:
+          - $ref: '#/components/schemas/TipoServicoEnum'
+          title: Tipo de Serviço
+        data_agendamento:
+          type: string
+          format: date-time
+          nullable: true
+          title: Data do Agendamento
+        acompanhada:
+          type: boolean
+          title: Cliente vai acompanhar a carga?
+        categoria:
+          $ref: '#/components/schemas/CategoriaEnum'
+        motorista:
+          type: integer
+          nullable: true
+    PatchedMotoristaRequest:
+      type: object
+      properties:
+        telefone:
+          type: string
+          minLength: 1
+          maxLength: 20
+        bi:
+          type: string
+          minLength: 1
+          title: Bilhete de Identidade
+          maxLength: 20
+        carta_conducao:
+          type: string
+          minLength: 1
+          maxLength: 50
+        user:
+          type: integer
+        veiculo:
+          type: integer
+          nullable: true
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        bi:
+          type: string
+        morada:
+          type: string
+      required:
+      - bi
+      - email
+      - username
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        email:
+          type: string
+          format: email
+          minLength: 1
+        tipo_usuario:
+          allOf:
+          - $ref: '#/components/schemas/TipoUsuarioEnum'
+          writeOnly: true
+        bi:
+          type: string
+          minLength: 1
+        telefone:
+          type: string
+          writeOnly: true
+          minLength: 1
+        morada:
+          type: string
+          minLength: 1
+        carta_conducao:
+          type: string
+          writeOnly: true
+      required:
+      - bi
+      - email
+      - password
+      - telefone
+      - tipo_usuario
+      - username
+    StatusEnum:
+      enum:
+      - PENDENTE
+      - EM_TRANSITO
+      - ENTREGUE
+      - CANCELADO
+      type: string
+      description: |-
+        * `PENDENTE` - Pendente
+        * `EM_TRANSITO` - Em Trânsito
+        * `ENTREGUE` - Entregue
+        * `CANCELADO` - Cancelado
+    TipoServicoEnum:
+      enum:
+      - IMEDIATO
+      - AGENDADO
+      type: string
+      description: |-
+        * `IMEDIATO` - Serviço Imediato
+        * `AGENDADO` - Serviço Agendado
+    TipoUsuarioEnum:
+      enum:
+      - cliente
+      - motorista
+      type: string
+      description: |-
+        * `cliente` - Cliente
+        * `motorista` - Motorista
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

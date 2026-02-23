@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Nzila Plus",
+    "slug": "nzila-plus-client",
+    "version": "1.0.0",
+    "sdkVersion": "50.0.0",
+    "platforms": ["ios","android","web"],
+    "orientation": "portrait",
+    "icon": "https://dummyimage.com/512x512/ffffff/000000.png&text=Nzila+Plus",
+    "splash": {
+      "image": "https://dummyimage.com/1024x1024/ffffff/000000.png&text=Nzila+Plus",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "src/assets/*"
+    ],
+    "extra": {
+      "apiUrl": "https://unsyndicated-sharyl-unrequisite.ngrok-free.dev"
+    }
+  }
+}
